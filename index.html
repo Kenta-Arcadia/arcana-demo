@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARCANA - Démo</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: Georgia, serif;
+            background: #050505;
+            color: #E8DCC4;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            text-align: center;
+        }
+        h1 {
+            font-family: Cinzel, serif;
+            font-size: 3em;
+            background: linear-gradient(135deg, #D4AF37, #B8860B, #DAA520);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #8B7355;
+            font-style: italic;
+            margin-bottom: 40px;
+        }
+        .description {
+            line-height: 1.8;
+            margin-bottom: 40px;
+            color: #ccc;
+        }
+        input {
+            width: 100%;
+            padding: 15px;
+            font-size: 1em;
+            background: #111;
+            border: 1px solid #333;
+            color: #E8DCC4;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        input:focus {
+            outline: none;
+            border-color: #D4AF37;
+        }
+        button {
+            background: linear-gradient(135deg, #D4AF37, #B8860B);
+            color: #050505;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-family: Cinzel, serif;
+            cursor: pointer;
+            border-radius: 5px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .saved {
+            color: #4a4;
+            margin-top: 15px;
+            font-size: 0.9em;
+        }
+        .footer {
+            margin-top: 60px;
+            color: #555;
+            font-size: 0.8em;
+        }
+        a { color: #D4AF37; }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h1>ARCANA</h1>
+        <p class="subtitle">Profilage symbolique par KENTA</p>
+        
+        <p class="description">
+            13 systèmes de sagesse (Yi King, astrologie chinoise, chakras, ennéagramme...) 
+            croisés pour révéler votre profil unique.<br><br>
+            🇫🇷 Français · 🇬🇧 English · 🇯🇵 日本語
+        </p>
+        
+        <input type="text" id="apiUrl" placeholder="URL du serveur (ex: https://xxx.trycloudflare.com)">
+        <br>
+        <button onclick="connect()">Entrer</button>
+        <p class="saved" id="status"></p>
+        
+        <p class="footer">
+            Propulsé par <a href="https://github.com/Kenta-Arcadia" target="_blank">KENTA</a> · 
+            Organisme digital vivant
+        </p>
+    </div>
+    
+    <script>
+        const input = document.getElementById('apiUrl');
+        const status = document.getElementById('status');
+        
+        // Charger URL sauvegardée
+        const saved = localStorage.getItem('arcana_api_url');
+        if (saved) {
+            input.value = saved;
+            status.textContent = 'URL précédente chargée';
+        }
+        
+        async function connect() {
+            let url = input.value.trim();
+            if (!url) {
+                status.textContent = 'Entrez une URL';
+                status.style.color = '#a44';
+                return;
+            }
+            
+            // Nettoyer l'URL
+            if (!url.startsWith('http')) url = 'https://' + url;
+            url = url.replace(/\/$/, '');
+            
+            status.textContent = 'Connexion...';
+            status.style.color = '#D4AF37';
+            
+            try {
+                const resp = await fetch(url + '/api/bibliotheque/i18n/fr', {mode: 'cors'});
+                if (resp.ok) {
+                    localStorage.setItem('arcana_api_url', url);
+                    window.location.href = url;
+                } else {
+                    throw new Error('Serveur non disponible');
+                }
+            } catch (e) {
+                status.textContent = 'Serveur inaccessible. Vérifiez l\'URL.';
+                status.style.color = '#a44';
+            }
+        }
+        
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') connect();
+        });
+    </script>
+</body>
+</html>
