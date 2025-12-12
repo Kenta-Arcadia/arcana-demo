@@ -24,10 +24,20 @@
             cursor: pointer;
             margin-bottom: 40px;
             transition: transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         .orb:hover {
             transform: scale(1.05);
             box-shadow: 0 0 80px rgba(212, 175, 55, 0.6);
+        }
+        .orb span {
+            font-family: Cinzel, serif;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #050505;
+            letter-spacing: 2px;
         }
         input {
             width: 300px;
@@ -64,6 +74,7 @@
             font-size: 0.9em;
         }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="lang">
@@ -72,7 +83,7 @@
         <span data-lang="ja">🇯🇵</span>
     </div>
     <input type="text" id="apiUrl" placeholder="URL">
-    <div class="orb" onclick="connect()"></div>
+    <div class="orb" onclick="connect()"><span>KENTA</span></div>
     <p class="error" id="status"></p>
     
     <script>
@@ -80,11 +91,9 @@
         const status = document.getElementById('status');
         let lang = 'fr';
         
-        // Charger URL sauvegardée
         const saved = localStorage.getItem('arcana_api_url');
         if (saved) input.value = saved;
         
-        // Langue
         document.querySelectorAll('.lang span').forEach(el => {
             el.addEventListener('click', () => {
                 document.querySelectorAll('.lang span').forEach(s => s.classList.remove('active'));
